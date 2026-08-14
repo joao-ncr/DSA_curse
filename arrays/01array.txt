@@ -1,0 +1,28 @@
+Array estáticos:
+- Tamanho fixo / tempo de compilação
+- Memória ~> stack
++ ganho de performance
+- menos operações
+- segurança (memory leaks)
+
+~> Utilidade
+Performance crítica
+C, Rust
+
+
+Arrays dinâmicos:
+- Tamanho variável
+- Memória: Heap
+Aumento e diminuição variáveç
++ ganho de flexibilidade
+O(n)
+
+~> Utilidade
+Diversos tipos de sistemas
+Tamanhos variáveis
+JavaScript, Python
+
+===================================================
+
+Cache
+L1, L2, L3
