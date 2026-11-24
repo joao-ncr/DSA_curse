@@ -1,0 +1,37 @@
+1. A Base: Pré-ordem vs. Pós-ordem em Árvores GenéricasDiferente de árvores binárias (que têm esquerda, raiz e direita), numa árvore genérica cada nó tem uma lista de $N$ filhos. Portanto, só existem dois momentos para você "processar" (imprimir, comparar, calcular) o nó atual: antes de visitar seus filhos ou depois de visitar todos eles.
+Percurso em Pré-ordem (Pai primeiro, filhos depois): Você chega no nó e já faz o trabalho nele 
+(ex: imprime o nome, verifica se é o alvo da busca).
+
+Depois, entra no laço while para visitar cada um dos seus filhos recursivamente.
+Uso típico: Quando a informação flui de cima para baixo 
+(exibir hierarquia, buscar um elemento, calcular profundidade).
+
+Percurso em Pós-ordem (Filhos primeiro, pai por último):
+Você chega no nó, não faz nada ainda, e entra direto no laço while para visitar todos os filhos.
+Só depois que todos os filhos terminam e devolvem suas respostas é que você faz o trabalho no pai.
+
+Uso típico: Quando a resposta do pai depende da resposta dos filhos, ou seja, 
+a informação flui de baixo para cima 
+(calcular altura, contar total de nós, liberar memória com free).
+
+2. Detalhando exibir 
+(Exemplo clássico de Pré-ordem)C++void exibir(NoArvore *no, int nivel) {
+    if (no == NULL) return;                     // 1. Caso base
+    
+    // --- TRABALHO NO NÓ ATUAL (ANTES DOS FILHOS = PRÉ-ORDEM) ---
+    for (int i = 0; i < nivel; i++) {
+        printf("    ");
+    }
+    printf("|-- %s\n", no->nome);
+    
+    // --- VISITA AOS FILHOS ---
+    NoArvore *filho = no->primeiro_filho;
+    while (filho != NULL) {
+        exibir(filho, nivel + 1);               // Desce para o filho aumentando o nível
+        filho = filho->proximo_irmao;           // Passa para o irmão ao lado
+    }
+}
+
+Por que tem que ser Pré-ordem aqui?
+Para desenhar uma árvore indentada no terminal, o pai precisa aparecer acima dos filhos. Se o printf ficasse depois do while (pós-ordem), os netos seriam impressos primeiro, depois os filhos e a raiz apareceria por último no rodapé, invertendo a visualização.O papel do parâmetro nivel:
+Note que nivel é passado por valor (uma cópia). Quando A (nivel = 0) chama exibir(C, nivel + 1), C recebe 1. Quando C termina e a execução volta para o while de A, a variável nivel dentro de A continua valendo 0. Por isso, ao chamar o próximo irmão B com nivel + 1, B também recebe 1.
