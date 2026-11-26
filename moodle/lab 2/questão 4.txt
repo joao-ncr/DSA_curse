@@ -1,0 +1,31 @@
+Modifique a estrutura da árvore genérica para armazenar um valor inteiro além do nome:
+
+typedef struct NoArvore {
+    char nome[50];
+    int valor;
+    struct NoArvore *primeiro_filho;
+    struct NoArvore *proximo_irmao;
+} NoArvore;
+Implemente funções recursivas para:
+
+a) int soma_valores(NoArvore *no): soma todos os valores da árvore
+
+b) int maior_valor(NoArvore *no): encontra o maior valor da árvore
+
+c) int menor_valor(NoArvore *no): encontra o menor valor da árvore
+
+Entrada:
+
+Primeira linha: N (número de nós, 1 ≤ N ≤ 100)
+
+Próximas N linhas: nome_pai nome_filho valor
+
+A raiz é o primeiro nó que aparece como pai e nunca como filho
+
+Saída:
+
+Primeira linha: "Soma: <valor>"
+
+Segunda linha: "Maior: <valor>"
+
+Terceira linha: "Menor: <valor>"

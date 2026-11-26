@@ -1,0 +1,572 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Guia de Revisão: Árvores</title>
+<style>
+/* layout: artigo técnico de uma coluna, com trilha de navegação fixa no topo e
+   "cartões de caso" para os pontos que mais caem em prova */
+:root{
+  --bg:#f6f5f1; --surface:#ffffff; --ink:#1b2a22; --muted:#5c6b63;
+  --accent:#2f6d4f; --accent-ink:#ffffff; --line:#d9d4c7;
+  --warn-bg:#fdf2e1; --warn-ink:#7a4a05; --warn-line:#e8c98a;
+  --err-bg:#fbe9e7; --err-ink:#7a2a20; --err-line:#e9b3a8;
+  --code-bg:#10201a; --code-ink:#dff0e6; --code-accent:#7fd9a6;
+  --font-display:'Space Grotesk',Inter,system-ui,sans-serif;
+  --font-body:'Inter',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono','Courier New',monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121712; --surface:#1a211b; --ink:#e9efe7; --muted:#9fb0a4;
+    --accent:#6fcf97; --accent-ink:#0d1a12; --line:#2d362e;
+    --warn-bg:#2b2213; --warn-ink:#f0c877; --warn-line:#4a3a1a;
+    --err-bg:#2b1715; --err-ink:#f2a695; --err-line:#4a2420;
+    --code-bg:#0b140f; --code-ink:#d9efe2; --code-accent:#7fd9a6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121712; --surface:#1a211b; --ink:#e9efe7; --muted:#9fb0a4;
+  --accent:#6fcf97; --accent-ink:#0d1a12; --line:#2d362e;
+  --warn-bg:#2b2213; --warn-ink:#f0c877; --warn-line:#4a3a1a;
+  --err-bg:#2b1715; --err-ink:#f2a695; --err-line:#4a2420;
+  --code-bg:#0b140f; --code-ink:#d9efe2; --code-accent:#7fd9a6;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body);
+  font-size:16px; line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+}
+.wrap{max-width:860px; margin:0 auto; padding-block:28px 80px;}
+h1,h2,h3{font-family:var(--font-display); line-height:1.15; text-wrap:balance; color:var(--ink)}
+h1{font-size:clamp(1.7rem,4vw,2.3rem); margin:.2em 0 .1em}
+h2{font-size:1.5rem; margin:2.2em 0 .6em; padding-top:.4em; border-top:1px solid var(--line)}
+h3{font-size:1.15rem; margin:1.6em 0 .5em; color:var(--accent)}
+p{margin:.7em 0; max-width:65ch}
+.lede{color:var(--muted); font-size:1.05rem; max-width:65ch}
+.eyebrow{font-family:var(--font-mono); font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent)}
+a{color:var(--accent)}
+code{font-family:var(--font-mono); background:var(--surface); border:1px solid var(--line); padding:.1em .35em; border-radius:4px; font-size:.9em}
+ul,ol{padding-left:1.3em}
+li{margin:.35em 0}
+hr{border:none; border-top:1px solid var(--line); margin:2.5em 0}
+
+/* nav pills */
+.toc{
+  position:sticky; top:0; z-index:5; background:var(--bg);
+  display:flex; flex-wrap:wrap; gap:6px; padding-block:10px;
+  border-bottom:1px solid var(--line); margin-bottom:8px;
+}
+.toc a{
+  font-family:var(--font-mono); font-size:.72rem; text-decoration:none;
+  color:var(--muted); border:1px solid var(--line); border-radius:999px;
+  padding:5px 10px; white-space:nowrap; background:var(--surface);
+}
+.toc a:hover{color:var(--accent); border-color:var(--accent)}
+
+/* callout boxes */
+.box{border:1px solid var(--line); border-radius:10px; background:var(--surface); padding:16px 18px; margin:1.1em 0;}
+.box > .tag{font-family:var(--font-mono); font-size:.7rem; letter-spacing:.07em; text-transform:uppercase; font-weight:700; display:block; margin-bottom:.5em}
+.box.strategy{border-color:var(--accent)}
+.box.strategy > .tag{color:var(--accent)}
+.box.warn{background:var(--warn-bg); border-color:var(--warn-line)}
+.box.warn > .tag{color:var(--warn-ink)}
+.box.err{background:var(--err-bg); border-color:var(--err-line)}
+.box.err > .tag{color:var(--err-ink)}
+.box p:first-of-type{margin-top:0}
+.box p:last-child{margin-bottom:0}
+
+/* code blocks */
+pre{
+  background:var(--code-bg); color:var(--code-ink); border-radius:10px;
+  padding:14px 16px; overflow-x:auto; font-family:var(--font-mono); font-size:.85rem;
+  line-height:1.55; margin:1em 0;
+}
+pre .c{color:var(--code-accent)}
+
+/* tables */
+.tbl-wrap{overflow-x:auto; margin:1.1em 0}
+table{border-collapse:collapse; width:100%; min-width:460px; font-size:.92rem}
+th,td{border:1px solid var(--line); padding:7px 10px; text-align:left; vertical-align:top}
+th{background:var(--surface); font-family:var(--font-display); font-weight:600}
+tr:nth-child(even) td{background:color-mix(in srgb, var(--surface) 55%, transparent)}
+td code{white-space:nowrap}
+
+/* figures */
+figure{margin:1.4em 0; padding:14px; background:var(--surface); border:1px solid var(--line); border-radius:10px}
+figure svg{display:block; max-width:100%; height:auto; margin:0 auto}
+figcaption{font-size:.85rem; color:var(--muted); margin-top:.6em; text-align:center}
+svg text{font-family:var(--font-mono); fill:currentColor}
+.node-fill{fill:var(--surface); stroke:currentColor; stroke-width:1.6}
+.node-hot{fill:color-mix(in srgb, var(--accent) 22%, var(--surface)); stroke:var(--accent); stroke-width:2}
+.edge{stroke:currentColor; stroke-width:1.4; fill:none}
+
+/* exercise map */
+.examap{display:grid; grid-template-columns:1fr; gap:8px}
+.examap .row{display:flex; gap:10px; align-items:baseline; border-bottom:1px dashed var(--line); padding-bottom:6px; min-width:0}
+.examap .lab{font-family:var(--font-mono); font-size:.78rem; color:var(--accent); flex:0 0 auto}
+.examap .what{min-width:0}
+
+.footnote{color:var(--muted); font-size:.85rem}
+.kbd{font-family:var(--font-mono); background:var(--surface); border:1px solid var(--line); border-bottom-width:2px; border-radius:5px; padding:0 .4em}
+</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<div class="wrap">
+
+<nav class="toc">
+  <a href="#intro">Intro</a>
+  <a href="#base">1. Base</a>
+  <a href="#generica">2. Árvore genérica</a>
+  <a href="#percursos">3. Reconstrução</a>
+  <a href="#abb">4. ABB</a>
+  <a href="#remocao">5. Remoção</a>
+  <a href="#heap">6. Heap &amp; array</a>
+  <a href="#pegadinhas">7. Pegadinhas</a>
+  <a href="#mapa">8. Mapa de exercícios</a>
+</nav>
+
+<header id="intro">
+  <div class="eyebrow">STCO01 — Algoritmos &amp; Programação I</div>
+  <h1>Guia de revisão: Árvores</h1>
+  <p class="lede">Prova em 27/11. Este guia cobre, com profundidade, tudo que apareceu
+  nos laboratórios 1 a 5 do Moodle (o lab 5 é a prova anterior de 20/11 — a melhor pista
+  do formato de amanhã) e nas aulas do Prof. Sávio sobre ABB. Pontos 1 e 2 estão
+  condensados porque você já domina a base; a partir do ponto 3 a explicação parte do zero.</p>
+</header>
+
+<section id="base">
+<h2>1. Conceitos-base — direto ao avançado</h2>
+
+<div class="box warn">
+  <span class="tag">Atenção — convenção</span>
+  <p>Não existe uma única definição de altura/profundidade entre os livros. A mais comum
+  (Cormen, Drozdek) é <code>altura(nó folha) = 0</code> e <code>altura(árvore vazia) = -1</code>,
+  com <code>profundidade(raiz) = 0</code>. Se o enunciado da prova disser "altura = número de
+  níveis", a raiz sozinha já vale 1. <strong>Leia a definição no enunciado antes de responder.</strong></p>
+</div>
+
+<div class="tbl-wrap">
+<table>
+<tr><th>Grandeza</th><th>Fórmula (raiz = nível 0)</th></tr>
+<tr><td>Nós no máximo no nível <code>k</code></td><td><code>2^k</code></td></tr>
+<tr><td>Nós no máximo em árvore de altura <code>h</code></td><td><code>2^(h+1) - 1</code></td></tr>
+<tr><td>Altura mínima para <code>n</code> nós (balanceada)</td><td><code>ceil(log2(n+1)) - 1</code></td></tr>
+<tr><td>Altura máxima para <code>n</code> nós (degenerada)</td><td><code>n - 1</code></td></tr>
+<tr><td>Arestas de qualquer árvore com <code>n</code> nós</td><td><code>n - 1</code></td></tr>
+</table>
+</div>
+
+<h3>Hierarquia de tipos (pegadinha de nomenclatura)</h3>
+<p><strong>Perfeita</strong> (todos os níveis cheios) ⊂ <strong>Completa</strong> (todos os níveis
+cheios exceto o último, preenchido da esquerda p/ direita) ⊂ <strong>Cheia</strong> (todo nó tem
+0 ou 2 filhos, nunca 1). Toda perfeita é completa e cheia; a volta não vale — uma árvore pode
+ser cheia sem ser completa.</p>
+
+<p><strong>Grau:</strong> em árvore binária é sempre ≤ 2 por definição, não precisa calcular.
+Em árvore <em>genérica</em> (a dos seus labs, com <code>primeiro_filho</code>/<code>proximo_irmao</code>)
+o grau de cada nó é livre — por isso o <code>grau_maximo</code> do lab 1/2 faz sentido só lá.</p>
+</section>
+
+<section id="generica">
+<h2>2. Árvore genérica: representação filho-mais-velho / irmão-mais-novo</h2>
+<p>Essa é a estrutura de todos os seus labs 1–3 e das questões "sistema de arquivos",
+"menu de navegação" (lab 3 q1), "taxonomia biológica" (lab 3 q2) e "commits" (lab 5 q2).
+A ideia: uma árvore em que cada nó pode ter qualquer número de filhos é representada com
+<strong>apenas dois ponteiros por nó</strong>, em vez de um vetor de filhos.</p>
+
+<figure>
+<svg viewBox="0 0 640 260" role="img" aria-label="Árvore lógica de diretórios à esquerda, mesma árvore representada por ponteiros primeiro_filho e proximo_irmao à direita">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><polygon points="0,0 7,3 0,6" fill="currentColor"/></marker>
+  </defs>
+  <text x="10" y="18" font-size="12" font-weight="700">Árvore lógica</text>
+  <circle cx="90" cy="45" r="18" class="node-fill"/><text x="90" y="49" text-anchor="middle" font-size="11">raiz</text>
+  <circle cx="40" cy="110" r="18" class="node-fill"/><text x="40" y="114" text-anchor="middle" font-size="10">doc</text>
+  <circle cx="90" cy="110" r="18" class="node-fill"/><text x="90" y="114" text-anchor="middle" font-size="10">img</text>
+  <circle cx="140" cy="110" r="18" class="node-fill"/><text x="140" y="114" text-anchor="middle" font-size="10">mus</text>
+  <circle cx="40" cy="175" r="18" class="node-hot"/><text x="40" y="179" text-anchor="middle" font-size="9">tese</text>
+  <line class="edge" x1="90" y1="63" x2="40" y2="92"/>
+  <line class="edge" x1="90" y1="63" x2="90" y2="92"/>
+  <line class="edge" x1="90" y1="63" x2="140" y2="92"/>
+  <line class="edge" x1="40" y1="128" x2="40" y2="157"/>
+
+  <text x="340" y="18" font-size="12" font-weight="700">Representação real (ponteiros)</text>
+  <circle cx="380" cy="45" r="18" class="node-fill"/><text x="380" y="49" text-anchor="middle" font-size="11">raiz</text>
+  <circle cx="380" cy="110" r="18" class="node-fill"/><text x="380" y="114" text-anchor="middle" font-size="10">doc</text>
+  <circle cx="460" cy="110" r="18" class="node-fill"/><text x="460" y="114" text-anchor="middle" font-size="10">img</text>
+  <circle cx="540" cy="110" r="18" class="node-fill"/><text x="540" y="114" text-anchor="middle" font-size="10">mus</text>
+  <circle cx="380" cy="175" r="18" class="node-hot"/><text x="380" y="179" text-anchor="middle" font-size="9">tese</text>
+  <line class="edge" x1="380" y1="63" x2="380" y2="92" marker-end="url(#arr)"/>
+  <line class="edge" x1="398" y1="110" x2="442" y2="110" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+  <line class="edge" x1="478" y1="110" x2="522" y2="110" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+  <line class="edge" x1="380" y1="128" x2="380" y2="157" marker-end="url(#arr)"/>
+  <text x="385" y="80" font-size="9">1º filho</text>
+  <text x="410" y="104" font-size="9">irmão</text>
+</svg>
+<figcaption>Setas sólidas = <code>primeiro_filho</code>; setas tracejadas = <code>proximo_irmao</code>.
+Repare: "img" e "mus" não são filhos de "doc" — são irmãos encadeados horizontalmente.</figcaption>
+</figure>
+
+<h3>O padrão de código que se repete em todo exercício desse tipo</h3>
+<p>Uma vez que você entende que "percorrer todos os filhos de um nó" é andar por uma lista
+encadeada (pelo <code>proximo_irmao</code>), todo algoritmo vira uma combinação de duas ideias:</p>
+<pre>// (A) visitar UM nó e descer na árvore — recursão
+void visita(NoArvore *no) {
+    if (no == NULL) return;
+    // ... trabalho no nó (pré-ordem) ...
+    NoArvore *filho = no->primeiro_filho;
+    while (filho != NULL) {          // (B) andar pelos irmãos — laço
+        visita(filho);
+        filho = filho->proximo_irmao;
+    }
+    // ... trabalho no nó (pós-ordem) ...
+}</pre>
+<p>Isso resolve <code>altura</code>, <code>contar</code>, <code>soma_valores</code>,
+<code>caminho</code>, <code>exibir</code> — a única coisa que muda entre eles é
+<strong>o que você faz</strong> no "trabalho no nó" e <strong>onde</strong> (antes do laço =
+pré-ordem, depois do laço = pós-ordem).</p>
+
+<h3>DFS com pilha vs. BFS com fila (lab 3, questão 3)</h3>
+<p>A diferença entre os dois percursos não está em "visitar na ordem certa" — está em
+<strong>qual estrutura guarda os nós pendentes</strong>. Pilha = LIFO = desce fundo antes de
+voltar; fila = FIFO = varre nível inteiro antes de descer.</p>
+
+<div class="tbl-wrap">
+<table>
+<tr><th>Passo</th><th>Pilha (DFS) após empilhar filhos</th><th>Fila (BFS) após enfileirar filhos</th></tr>
+<tr><td>Visita raiz</td><td><code>[B, C]</code> (empilha C depois B → desempilha B primeiro)</td><td><code>[B, C]</code> (enfileira na ordem, tira B primeiro)</td></tr>
+<tr><td>Visita B</td><td><code>[D, E, C]</code></td><td><code>[C, D, E]</code></td></tr>
+<tr><td>Visita próximo</td><td>D (o mais fundo primeiro!)</td><td>C (o mais raso primeiro!)</td></tr>
+</table>
+</div>
+<div class="box strategy">
+<span class="tag">Estratégia</span>
+<p>Ao empilhar os filhos de um nó na pilha, a ordem de inserção fica invertida na saída.
+Se a questão pede uma ordem de DFS específica, empilhe os filhos <strong>da direita para a
+esquerda</strong> para que o mais à esquerda seja desempilhado primeiro.</p>
+</div>
+
+<h3>Aplicações reais (o que muda é só a struct)</h3>
+<ul>
+<li><strong>Menu de navegação</strong> (lab 3 q1): cada nó é uma opção; navegar = seguir
+<code>primeiro_filho</code>; "voltar" precisa de ponteiro para o pai (ou pilha de navegação).</li>
+<li><strong>Taxonomia biológica</strong> (lab 3 q2): a árvore tem profundidade fixa (7 níveis);
+"contar espécies" é só contar nós com <code>nivel == 6</code> — um pós-ordem simples.</li>
+<li><strong>Árvore de commits</strong> (lab 5 q2): <code>TOTAL id</code> soma a subárvore a partir
+de um nó qualquer, não da raiz — primeiro você precisa <em>achar</em> o nó pelo id (busca),
+depois somar (pós-ordem a partir dali).</li>
+</ul>
+</section>
+
+<section id="percursos">
+<h2>3. Reconstruir uma árvore a partir de dois percursos</h2>
+<p>Lab 4, questão 1: dados pré-ordem e em-ordem, reconstrua a árvore e imprima o pós-ordem.
+Essa é a questão mais temida da prova porque parece mágica — mas é mecânica.</p>
+
+<div class="box strategy">
+<span class="tag">A ideia em uma frase</span>
+<p>O <strong>primeiro elemento do pré-ordem é sempre a raiz</strong> da (sub)árvore atual.
+Procure esse valor no em-ordem: tudo à esquerda dele no em-ordem é a subárvore esquerda,
+tudo à direita é a subárvore direita. Repita recursivamente.</p>
+</div>
+
+<figure>
+<svg viewBox="0 0 620 210" role="img" aria-label="Pré-ordem 1 2 4 5 3 e em-ordem 4 2 5 1 3 sendo divididos para reconstruir a árvore">
+  <text x="10" y="18" font-size="12" font-weight="700">pré-ordem:</text>
+  <text x="130" y="18" font-size="12" font-family="monospace">1   2   4   5   3</text>
+  <text x="10" y="44" font-size="12" font-weight="700">em-ordem:</text>
+  <text x="130" y="44" font-size="12" font-family="monospace">4   2   5 | 1 |  3</text>
+  <text x="195" y="60" font-size="9">esquerda de 1</text>
+  <text x="300" y="60" font-size="9">direita de 1</text>
+  <line class="edge" x1="20" y1="70" x2="20" y2="90"/>
+  <text x="10" y="102" font-size="10">1 é a raiz (1º do pré-ordem). No em-ordem, "4 2 5" fica</text>
+  <text x="10" y="118" font-size="10">à esquerda de 1 e "3" à direita → subárvore esq. = {4,2,5}, dir. = {3}</text>
+
+  <circle cx="310" cy="145" r="18" class="node-hot"/><text x="310" y="149" text-anchor="middle" font-size="11">1</text>
+  <circle cx="260" cy="190" r="16" class="node-fill"/><text x="260" y="194" text-anchor="middle" font-size="10">2</text>
+  <circle cx="360" cy="190" r="16" class="node-fill"/><text x="360" y="194" text-anchor="middle" font-size="10">3</text>
+  <line class="edge" x1="298" y1="159" x2="268" y2="176"/>
+  <line class="edge" x1="322" y1="159" x2="352" y2="176"/>
+  <text x="230" y="205" font-size="9">(2 vira raiz de {4,2,5} → filhos 4 e 5)</text>
+</svg>
+<figcaption>Repetindo o processo em {4,2,5} com pré-ordem 2,4,5: 2 é raiz, "4" fica à esquerda e "5" à direita.
+Pós-ordem final: 4 5 2 3 1.</figcaption>
+</figure>
+
+<pre>int preOrdem[], emOrdem[], indice = 0; // indice global/por referência
+
+int posOrdem(int esquerda, int direita) {
+    if (esquerda > direita) return; // sub-árvore vazia
+
+    int raiz = preOrdem[indice++];      // consome o próximo elemento do pré-ordem
+    int i = esquerda;
+    while (emOrdem[i] != raiz) i++;     // acha a raiz dentro da faixa do em-ordem
+
+    posOrdem(esquerda, i - 1);          // processa TODA a subárvore esquerda primeiro
+    posOrdem(i + 1, direita);           // depois TODA a subárvore direita
+    printf("%d ", raiz);                // só então imprime a raiz (é pós-ordem!)
+}</pre>
+
+<div class="box warn">
+<span class="tag">Por que o índice do pré-ordem é global</span>
+<p>Cada chamada recursiva consome exatamente um elemento do pré-ordem — a raiz da sua
+sub-faixa — e <strong>sempre na ordem em que eles aparecem</strong> no array, porque pré-ordem
+sempre visita "pai antes dos filhos" não importa de qual sub-árvore. Por isso o índice nunca
+pode "voltar": ele só anda para frente, consumindo um elemento por chamada.</p>
+</div>
+</section>
+
+<section id="abb">
+<h2>4. Árvore Binária de Busca (ABB) — do zero</h2>
+<p>Propriedade: para <strong>todo</strong> nó, tudo na subárvore esquerda é menor, tudo na
+subárvore direita é maior. Essa única regra garante que o percurso em-ordem sempre sai em
+ordem crescente.</p>
+
+<pre>no* inserir_abb(no* raiz, int valor) {
+    if (raiz == NULL) return criar_no(valor);      // caso base: achou o lugar vazio
+    if (valor < raiz->valor)
+        raiz->esq = inserir_abb(raiz->esq, valor);  // sempre reatribui o ponteiro!
+    else
+        raiz->dir = inserir_abb(raiz->dir, valor);
+    return raiz;                                     // devolve a própria raiz, inalterada
+}</pre>
+<div class="box err">
+<span class="tag">Erro comum</span>
+<p>Esquecer o <code>raiz->esq = </code> / <code>raiz->dir = </code> na recursão. Sem isso,
+o nó novo é criado mas nunca é conectado à árvore — a função "funciona" mas o nó se perde.</p>
+</div>
+
+<h3>Maior e menor — sem recursão, com <code>while</code></h3>
+<p>O menor valor está sempre no nó mais à esquerda possível; o maior, mais à direita.
+Não precisa de recursão nem de comparação de valores — é só "andar" até o ponteiro virar NULL.</p>
+<pre>no* menor(no* raiz) { while (raiz->esq != NULL) raiz = raiz->esq; return raiz; }
+no* maior(no* raiz) { while (raiz->dir != NULL) raiz = raiz->dir; return raiz; }</pre>
+
+<h3>Validar se uma árvore é uma ABB (lab 4, questão 2)</h3>
+<p>Erro clássico: comparar só o nó com seus filhos diretos. Isso não basta — um nó pode ser
+maior que o filho esquerdo mas ainda assim violar a regra com um neto. A solução correta
+carrega um <strong>intervalo (mínimo, máximo) permitido</strong> por chamada recursiva:</p>
+<pre>int eh_abb(int i, long long minimo, long long maximo) {
+    if (i >= n || arv[i] == -1) return 1;                 // nó vazio: sempre válido
+    if (arv[i] <= minimo || arv[i] >= maximo) return 0;   // violou o intervalo herdado
+    return eh_abb(2*i+1, minimo, arv[i])      // filho esq.: herda teto = valor do nó
+        && eh_abb(2*i+2, arv[i], maximo);     // filho dir.: herda piso = valor do nó
+}</pre>
+<div class="box strategy">
+<span class="tag">Por que isso funciona</span>
+<p>Ao descer para a esquerda, todo valor da sub-árvore precisa ser menor que o nó atual
+— não só o filho direto. Por isso o <code>maximo</code> some para o valor do nó atual
+conforme você desce; o mesmo vale espelhado para <code>minimo</code> à direita.</p>
+</div>
+
+<h3>K-ésimo menor elemento (lab 4, questão 5)</h3>
+<p>Como o em-ordem de uma ABB já sai ordenado, o k-ésimo menor é simplesmente
+<strong>a k-ésima parada do em-ordem</strong>. Não precisa ordenar nada: pare de contar
+quando chegar no k-ésimo nó visitado.</p>
+<pre>void kesimo(no* raiz, int k, int *contador, int *resultado) {
+    if (raiz == NULL || *contador >= k) return;
+    kesimo(raiz->esq, k, contador, resultado);
+    (*contador)++;
+    if (*contador == k) { *resultado = raiz->valor; return; }
+    kesimo(raiz->dir, k, contador, resultado);
+}</pre>
+
+<h3>Sucessor e predecessor (lab 5: PROXIMO / ANTERIOR)</h3>
+<p>Essas operações apareceram na prova anterior — vale entender bem. O
+<strong>sucessor</strong> de um valor <code>v</code> (o próximo maior ou igual) e o
+<strong>predecessor</strong> (o anterior mais próximo) usam a mesma ideia de "melhor candidato
+visto até agora" enquanto você desce pela árvore comparando com <code>v</code>:</p>
+<pre>// próximo horário disponível >= h (sucessor-ou-igual)
+int proximo(no* raiz, int h) {
+    int melhor = -1; // -1 = "não existe"
+    while (raiz != NULL) {
+        if (raiz->valor >= h) { melhor = raiz->valor; raiz = raiz->esq; } // candidato; tente achar algo menor ainda >= h
+        else raiz = raiz->dir;                                            // raiz->valor < h, só pode estar à direita
+    }
+    return melhor;
+}</pre>
+<div class="box strategy">
+<span class="tag">Estratégia</span>
+<p>Pense em cada passo como "esse nó serve como resposta?" Se sim, guarde-o como melhor
+candidato e tente melhorar (ir para a esquerda, buscando algo ainda mais próximo de
+<code>h</code>). Se não, a resposta só pode estar do outro lado. <code>ANTERIOR</code> é o
+espelho exato disso: inverta <code>&gt;=</code>/<code>&lt;</code> e <code>esq</code>/<code>dir</code>.</p>
+</div>
+</section>
+
+<section id="remocao">
+<h2>5. Remoção em ABB — os 3 casos</h2>
+<p>Usada nas questões de "sistema de reservas" (lab 5 q1), "agenda de consultas" (lab 5 q3) e
+"dicionário" (lab 5 q4) — qualquer ABB com comando de remover.</p>
+
+<figure>
+<svg viewBox="0 0 640 170" role="img" aria-label="Três casos de remoção: nó folha, nó com um filho, nó com dois filhos">
+  <text x="30" y="16" font-size="11" font-weight="700">Caso 1 — folha</text>
+  <circle cx="60" cy="45" r="16" class="node-fill"/><text x="60" y="49" text-anchor="middle" font-size="10">30</text>
+  <circle cx="30" cy="90" r="16" class="node-fill" stroke-dasharray="3 2" opacity=".5"/><text x="30" y="94" text-anchor="middle" font-size="10" opacity=".5">20</text>
+  <circle cx="90" cy="90" r="16" class="node-fill"/><text x="90" y="94" text-anchor="middle" font-size="10">40</text>
+  <line class="edge" x1="60" y1="61" x2="30" y2="74" opacity=".5" stroke-dasharray="3 2"/>
+  <line class="edge" x1="60" y1="61" x2="90" y2="74"/>
+  <text x="10" y="130" font-size="9">Remove 20: só desconecta</text>
+  <text x="10" y="143" font-size="9">(ponteiro do pai vira NULL)</text>
+
+  <text x="260" y="16" font-size="11" font-weight="700">Caso 2 — um filho</text>
+  <circle cx="290" cy="45" r="16" class="node-fill" stroke-dasharray="3 2" opacity=".5"/><text x="290" y="49" text-anchor="middle" font-size="10" opacity=".5">30</text>
+  <circle cx="290" cy="90" r="16" class="node-hot"/><text x="290" y="94" text-anchor="middle" font-size="10">20</text>
+  <line class="edge" x1="290" y1="61" x2="290" y2="74" opacity=".5" stroke-dasharray="3 2"/>
+  <text x="235" y="130" font-size="9">Remove 30: o filho (20)</text>
+  <text x="235" y="143" font-size="9">sobe e toma o lugar do pai</text>
+
+  <text x="470" y="16" font-size="11" font-weight="700">Caso 3 — dois filhos</text>
+  <circle cx="520" cy="45" r="16" class="node-fill" stroke-dasharray="3 2" opacity=".5"/><text x="520" y="49" text-anchor="middle" font-size="10" opacity=".5">50</text>
+  <circle cx="490" cy="90" r="16" class="node-fill"/><text x="490" y="94" text-anchor="middle" font-size="10">30</text>
+  <circle cx="550" cy="90" r="16" class="node-fill"/><text x="550" y="94" text-anchor="middle" font-size="10">70</text>
+  <circle cx="530" cy="130" r="15" class="node-hot"/><text x="530" y="134" text-anchor="middle" font-size="9">60</text>
+  <line class="edge" x1="520" y1="61" x2="490" y2="74" opacity=".5" stroke-dasharray="3 2"/>
+  <line class="edge" x1="520" y1="61" x2="550" y2="74" opacity=".5" stroke-dasharray="3 2"/>
+  <line class="edge" x1="550" y1="106" x2="530" y2="117"/>
+</svg>
+<figcaption>Caso 3: 60 é o sucessor em-ordem de 50 (o menor valor da subárvore direita).
+Ele sobe para o lugar de 50 e depois é removido de onde estava (vira o caso 1 ou 2, recursivamente).</figcaption>
+</figure>
+
+<pre>no* remover_abb(no* raiz, int valor) {
+    if (raiz == NULL) return NULL;                          // não encontrado: nada a fazer
+
+    if (valor < raiz->valor)      raiz->esq = remover_abb(raiz->esq, valor);
+    else if (valor > raiz->valor) raiz->dir = remover_abb(raiz->dir, valor);
+    else {
+        // achou o nó a remover
+        if (raiz->esq == NULL && raiz->dir == NULL) {      // caso 1: folha
+            free(raiz); return NULL;
+        }
+        if (raiz->esq == NULL) { no* t = raiz->dir; free(raiz); return t; }  // caso 2
+        if (raiz->dir == NULL) { no* t = raiz->esq; free(raiz); return t; }  // caso 2
+
+        no* sucessor = menor(raiz->dir);           // caso 3: sucessor em-ordem
+        raiz->valor = sucessor->valor;             // copia o valor
+        raiz->dir = remover_abb(raiz->dir, sucessor->valor); // remove o sucessor de onde estava
+    }
+    return raiz;
+}</pre>
+
+<div class="box warn">
+<span class="tag">Degeneração — pegadinha teórica frequente</span>
+<p>Inserir valores já ordenados (1, 2, 3, 4, 5…) transforma a ABB numa lista encadeada:
+cada nó só tem filho direito. Busca, inserção e remoção caem de <code>O(log n)</code> para
+<code>O(n)</code>. Para <code>n = 1.000.000</code>: ~20 operações numa árvore balanceada
+contra até 1.000.000 numa degenerada. É exatamente para evitar isso que existem árvores
+auto-balanceadas (AVL, Rubro-Negra) — fora do escopo desta prova, mas é uma pergunta
+conceitual clássica ("por que usar AVL em vez de ABB comum?").</p>
+</div>
+</section>
+
+<section id="heap">
+<h2>6. Árvore binária como array (formato heap)</h2>
+<p>Em várias questões (lab 4 q2–q5) a árvore chega como um <strong>vetor</strong>, não como
+ponteiros. A regra é sempre a mesma: para o nó no índice <code>i</code>, o filho esquerdo
+está em <code>2i+1</code> e o direito em <code>2i+2</code>; <code>-1</code> marca ausência de nó.</p>
+
+<figure>
+<svg viewBox="0 0 560 230" role="img" aria-label="Array de 7 posições mapeado para uma árvore binária de três níveis">
+  <text x="10" y="18" font-size="11" font-weight="700">índice:</text>
+  <text x="10" y="40" font-size="11" font-weight="700">valor:</text>
+  <g font-family="monospace" font-size="11">
+    <text x="90" y="18" text-anchor="middle">0</text><text x="90" y="40" text-anchor="middle">50</text>
+    <text x="150" y="18" text-anchor="middle">1</text><text x="150" y="40" text-anchor="middle">30</text>
+    <text x="210" y="18" text-anchor="middle">2</text><text x="210" y="40" text-anchor="middle">70</text>
+    <text x="270" y="18" text-anchor="middle">3</text><text x="270" y="40" text-anchor="middle">20</text>
+    <text x="330" y="18" text-anchor="middle">4</text><text x="330" y="40" text-anchor="middle">40</text>
+    <text x="390" y="18" text-anchor="middle">5</text><text x="390" y="40" text-anchor="middle">60</text>
+    <text x="450" y="18" text-anchor="middle">6</text><text x="450" y="40" text-anchor="middle">80</text>
+  </g>
+  <rect x="68" y="8" width="404" height="38" fill="none" stroke="currentColor" opacity=".3"/>
+  <line x1="90" y1="54" x2="90" y2="60" opacity=".3"/>
+
+  <circle cx="280" cy="90" r="18" class="node-fill"/><text x="280" y="94" text-anchor="middle" font-size="10">50</text>
+  <circle cx="190" cy="150" r="18" class="node-fill"/><text x="190" y="154" text-anchor="middle" font-size="10">30</text>
+  <circle cx="370" cy="150" r="18" class="node-fill"/><text x="370" y="154" text-anchor="middle" font-size="10">70</text>
+  <circle cx="145" cy="205" r="16" class="node-fill"/><text x="145" y="209" text-anchor="middle" font-size="9">20</text>
+  <circle cx="235" cy="205" r="16" class="node-fill"/><text x="235" y="209" text-anchor="middle" font-size="9">40</text>
+  <circle cx="325" cy="205" r="16" class="node-fill"/><text x="325" y="209" text-anchor="middle" font-size="9">60</text>
+  <circle cx="415" cy="205" r="16" class="node-fill"/><text x="415" y="209" text-anchor="middle" font-size="9">80</text>
+  <line class="edge" x1="280" y1="108" x2="190" y2="132"/>
+  <line class="edge" x1="280" y1="108" x2="370" y2="132"/>
+  <line class="edge" x1="190" y1="168" x2="145" y2="189"/>
+  <line class="edge" x1="190" y1="168" x2="235" y2="189"/>
+  <line class="edge" x1="370" y1="168" x2="325" y2="189"/>
+  <line class="edge" x1="370" y1="168" x2="415" y2="189"/>
+  <text x="95" y="70" font-size="9">índice 0</text>
+  <text x="205" y="130" font-size="9">índice 1 = 2·0+1</text>
+  <text x="330" y="130" font-size="9">índice 2 = 2·0+2</text>
+</svg>
+<figcaption>O mesmo array <code>[50,30,70,20,40,60,80]</code> interpretado como árvore —
+é a representação usada nas questões de validar ABB, zigzag e simetria.</figcaption>
+</figure>
+
+<h3>Percurso zigue-zague (lab 4, questão 3)</h3>
+<p>Nível 0 esquerda→direita, nível 1 direita→esquerda, nível 2 esquerda→direita... O jeito
+mais simples de implementar: faça um BFS normal nível a nível, e <strong>inverta a ordem de
+impressão</strong> apenas nos níveis ímpares (sem precisar de pilha dupla).</p>
+
+<h3>Simetria / espelho (lab 4, questão 4)</h3>
+<p>Uma árvore é espelho de si mesma quando, ao comparar o filho esquerdo de um lado com o
+filho <em>direito</em> do outro (cruzado), os valores batem recursivamente:</p>
+<pre>int eh_espelho(int heap[], int n, int esq, int dir) {
+    int ve = (esq < n) ? heap[esq] : -1;
+    int vd = (dir < n) ? heap[dir] : -1;
+    if (ve == -1 && vd == -1) return 1;     // ambos vazios: simétrico até aqui
+    if (ve != vd) return 0;                  // valores diferentes: não é espelho
+    return eh_espelho(heap, n, 2*esq+1, 2*dir+2)   // esq-da-esq  vs  dir-da-dir
+        && eh_espelho(heap, n, 2*esq+2, 2*dir+1);  // esq-da-dir  vs  dir-da-esq
+}</pre>
+<div class="box strategy">
+<span class="tag">Por que os índices são cruzados</span>
+<p>Repare que a chamada compara <code>2*esq+1</code> (filho esquerdo do lado esquerdo) com
+<code>2*dir+2</code> (filho <strong>direito</strong> do lado direito) — é exatamente essa
+inversão que verifica "espelho" em vez de "igualdade simples".</p>
+</div>
+</section>
+
+<section id="pegadinhas">
+<h2>7. Checklist final de pegadinhas</h2>
+<ul>
+<li>Confira a convenção de altura/profundidade do enunciado antes de responder questão objetiva.</li>
+<li>Árvore vazia (<code>NULL</code>) ≠ árvore de um nó — todo caso base de recursão depende disso.</li>
+<li>Em <code>remover()</code> de árvore genérica, salve <code>proximo_irmao</code> antes do <code>free()</code> — você já faz isso certo no seu código, mas é o erro nº 1 da turma.</li>
+<li>Pré-ordem imprime o pai <strong>antes</strong> do laço de filhos; pós-ordem, <strong>depois</strong>. Trocar os dois é o erro mais comum ao montar árvore indentada no console.</li>
+<li>Em ABB, o menor valor nunca está na raiz — está no nó mais à esquerda possível.</li>
+<li>Validar ABB exige intervalo (mín, máx) herdado, não só comparação com os filhos diretos.</li>
+<li>Grau só é "livre" em árvore genérica; em árvore binária é sempre ≤ 2.</li>
+<li>Para o K-ésimo menor e para sucessor/predecessor, não existe atalho sem olhar a estrutura em-ordem — resolva em termos de "parar de contar" ou "melhor candidato até agora".</li>
+</ul>
+</section>
+
+<section id="mapa">
+<h2>8. Mapa rápido: exercício → conceito</h2>
+<div class="examap">
+  <div class="row"><span class="lab">Lab 1–2</span><span class="what">Árvore genérica: altura, profundidade, grau, caminho, BFS por nível, remoção de subárvore, percursos.</span></div>
+  <div class="row"><span class="lab">Lab 3 q1</span><span class="what">Árvore genérica aplicada: menu de navegação (navegar = descer/subir na árvore).</span></div>
+  <div class="row"><span class="lab">Lab 3 q2</span><span class="what">Árvore genérica com nível fixo: taxonomia, contagem por nível.</span></div>
+  <div class="row"><span class="lab">Lab 3 q3</span><span class="what">DFS com pilha explícita vs. BFS com fila explícita, sem recursão.</span></div>
+  <div class="row"><span class="lab">Lab 4 q1</span><span class="what">Reconstrução de árvore binária a partir de pré-ordem + em-ordem → pós-ordem.</span></div>
+  <div class="row"><span class="lab">Lab 4 q2</span><span class="what">Validar ABB a partir de array em formato heap (limites mín/máx).</span></div>
+  <div class="row"><span class="lab">Lab 4 q3</span><span class="what">Percurso zigue-zague por nível.</span></div>
+  <div class="row"><span class="lab">Lab 4 q4</span><span class="what">Simetria/espelho de árvore binária em array.</span></div>
+  <div class="row"><span class="lab">Lab 4 q5</span><span class="what">K-ésimo menor elemento de uma ABB.</span></div>
+  <div class="row"><span class="lab">Lab 5 q1</span><span class="what">ABB como sistema de reservas: inserir/remover/min/max/listar/consultar — remoção completa.</span></div>
+  <div class="row"><span class="lab">Lab 5 q2</span><span class="what">Árvore genérica como histórico de commits: soma de subárvore a partir de nó arbitrário, profundidade, caminho, BFS.</span></div>
+  <div class="row"><span class="lab">Lab 5 q3</span><span class="what">ABB como agenda: sucessor (PROXIMO) e predecessor (ANTERIOR).</span></div>
+  <div class="row"><span class="lab">Lab 5 q4</span><span class="what">ABB de strings: CRUD completo (inserir/remover/buscar/min/max/listar em-ordem).</span></div>
+</div>
+
+<hr>
+<p class="footnote">Material de revisão preparado a partir dos seus próprios laboratórios do
+Moodle e das aulas do Prof. Sávio S. Dias. Não substitui os slides oficiais — onde a
+convenção do professor divergir do que está aqui, vale a dele.</p>
+</section>
+
+</div>

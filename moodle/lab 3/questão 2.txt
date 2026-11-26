@@ -1,0 +1,35 @@
+Use uma árvore genérica para representar uma taxonomia biológica (Reino → Filo → Classe → Ordem → Família → Gênero → Espécie). Cada nó armazena o nome do táxon e seu nível.
+
+typedef struct NoTaxonomia {
+    char nome[50];
+    int nivel;   // 0=Reino, 1=Filo, ..., 6=Espécie
+    struct NoTaxonomia *primeiro_filho;
+    struct NoTaxonomia *proximo_irmao;
+} NoTaxonomia;
+Implemente:
+
+a) void exibir_taxonomia(NoTaxonomia *no, int nivel): exibe a taxonomia hierarquicamente
+
+b) int contar_especies(NoTaxonomia *no): conta quantas espécies existem na árvore (nós com nível 6)
+
+c) void listar_especies(NoTaxonomia *no): lista todas as espécies precedidas pelo caminho taxonômico
+
+Entrada:
+
+Primeira linha: N (número de nós)
+
+Próximas N linhas: nome_pai nome_filho nivel
+
+Saída:
+
+Primeira linha: "Taxonomia:"
+
+Próximas linhas: a árvore exibida hierarquicamente
+
+Linha em branco
+
+"Total de especies: <n>"
+
+"Especies:"
+
+Lista de espécies com caminho

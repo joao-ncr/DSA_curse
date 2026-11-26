@@ -1,0 +1,54 @@
+Implemente um explorador de árvore genérica que utiliza pilha e fila para realizar diferentes percursos, permitindo comparar o comportamento das duas estratégias de exploração.
+
+Use a seguinte estrutura de árvore genérica:
+
+typedef struct NoArvore {
+    int id;
+    char nome[50];
+    struct NoArvore *primeiro_filho;
+    struct NoArvore *proximo_irmao;
+} NoArvore;
+Implemente as seguintes funções:
+
+a) void explorar_dfs(NoArvore *raiz): percurso em profundidade usando pilha (DFS - Depth-First Search)
+
+Empilhe a raiz
+
+Enquanto a pilha não estiver vazia: desempilhe, visite o nó, empilhe seus filhos
+
+Exiba os nós na ordem de visita
+
+b) void explorar_bfs(NoArvore *raiz): percurso em largura usando fila (BFS - Breadth-First Search)
+
+Enfileire a raiz
+
+Enquanto a fila não estiver vazia: desenfileire, visite o nó, enfileire seus filhos
+
+Exiba os nós na ordem de visita
+
+c) int contar_nos_dfs(NoArvore *raiz): conta nós usando pilha (sem recursão)
+
+d) int contar_nos_bfs(NoArvore *raiz): conta nós usando fila (sem recursão)
+
+e) int maior_profundidade_bfs(NoArvore *raiz): encontra a maior profundidade usando fila, armazenando o nível de cada nó
+
+Entrada:
+
+Primeira linha: N (número de nós, 1 ≤ N ≤ 1000)
+
+Próximas N linhas: id_pai id_filho nome (-1 para indicar que o pai é a raiz)
+
+A raiz é o nó com id_pai = -1
+
+Saída:
+
+Primeira linha: "DFS: <ids separados por espaço>"
+
+Segunda linha: "BFS: <ids separados por espaço>"
+
+Terceira linha: "Total DFS: <n>"
+
+Quarta linha: "Total BFS: <n>"
+
+Quinta linha: "Maior profundidade: <n>"
+
