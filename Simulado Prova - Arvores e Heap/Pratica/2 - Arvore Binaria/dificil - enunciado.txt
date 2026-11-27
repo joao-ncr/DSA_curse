@@ -1,0 +1,19 @@
+Dados os percursos em pré-ordem e em-ordem de uma árvore binária (valores inteiros distintos, entre 1 e 100000), reconstrua a árvore usando uma representação dinâmica (ponteiros) e calcule:
+
+a) o percurso em pós-ordem da árvore reconstruída
+
+b) o diâmetro da árvore: o maior número de nós em qualquer caminho entre duas folhas da árvore, passando ou não pela raiz
+
+Entrada:
+
+Primeira linha: N (número de nós, 1 ≤ N ≤ 1000)
+
+Segunda linha: N inteiros representando o percurso em pré-ordem
+
+Terceira linha: N inteiros representando o percurso em-ordem
+
+Saída:
+
+Primeira linha: N inteiros representando o percurso em pós-ordem da árvore reconstruída, separados por espaço
+
+Segunda linha: "Diametro: <n>"

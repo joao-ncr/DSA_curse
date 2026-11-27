@@ -1,0 +1,36 @@
+Uma empresa organiza seus cargos em uma hierarquia (árvore genérica), onde cada funcionário tem um limite de aprovação de despesas.
+
+typedef struct NoArvore {
+    char nome[50];
+    int limite;
+    struct NoArvore *primeiro_filho;
+    struct NoArvore *proximo_irmao;
+} NoArvore;
+
+Usando a representação filho mais velho / irmão mais novo, implemente funções recursivas para:
+
+a) int caminho_aprovacao(NoArvore *no, char *nome, char *resultado): monta a cadeia de aprovação da raiz até o funcionário (ex: "diretor/gerente/analista")
+
+b) void listar_por_nivel(NoArvore *no): imprime os funcionários agrupados por nível hierárquico (BFS)
+
+c) int soma_limites(NoArvore *no, char *nome): soma os limites de aprovação de um funcionário e de todos os seus subordinados (toda a subárvore)
+
+Entrada:
+
+Primeira linha: N (número de funcionários, 1 ≤ N ≤ 100)
+
+Próximas N linhas: nome limite (define cada funcionário e seu limite de aprovação)
+
+Próxima linha: M (número de relações hierárquicas)
+
+Próximas M linhas: nome_pai nome_filho (a raiz nunca aparece como filho)
+
+Última linha: nome do funcionário para consultar o caminho de aprovação e a soma de limites
+
+Saída:
+
+Primeira linha: "Caminho: <caminho>"
+
+Segunda linha: "Por nivel: <nós agrupados por nível, níveis separados por ' | ', nomes dentro do nível separados por espaço>"
+
+Terceira linha: "Soma de limites de <nome>: <n>"

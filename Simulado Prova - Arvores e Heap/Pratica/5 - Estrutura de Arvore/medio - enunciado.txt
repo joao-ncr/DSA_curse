@@ -1,0 +1,23 @@
+Usando a mesma representação por vetor de pais (pai[i] = pai do nó i; pai[raiz] = -1), implemente um programa que calcule:
+
+a) a profundidade de cada nó (a raiz tem profundidade 0)
+
+b) a altura da árvore (a maior profundidade entre os nós)
+
+c) o ancestral comum mais próximo (LCA) entre dois nós u e v dados na entrada
+
+Entrada:
+
+Primeira linha: N (número de nós, 1 ≤ N ≤ 1000)
+
+Segunda linha: N inteiros representando pai[0], pai[1], ..., pai[N-1]
+
+Terceira linha: u v (os dois nós para calcular o LCA)
+
+Saída:
+
+Primeira linha: "Profundidades: p0 p1 ... p(N-1)"
+
+Segunda linha: "Altura: <n>"
+
+Terceira linha: "LCA: <n>"

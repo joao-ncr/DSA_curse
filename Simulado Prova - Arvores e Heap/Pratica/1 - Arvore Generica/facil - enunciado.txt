@@ -1,0 +1,31 @@
+Uma rede social organiza usuários em uma estrutura hierárquica de "convites": cada usuário convidou um conjunto de outros usuários para entrar na rede, formando uma árvore genérica a partir do usuário fundador.
+
+typedef struct NoArvore {
+    char nome[50];
+    struct NoArvore *primeiro_filho;
+    struct NoArvore *proximo_irmao;
+} NoArvore;
+
+Usando a representação filho mais velho / irmão mais novo, implemente funções recursivas para:
+
+a) int contar_usuarios(NoArvore *no): conta o número total de usuários na árvore (incluindo o próprio nó)
+
+b) int contar_sem_convidados(NoArvore *no): conta quantos usuários não convidaram ninguém (nós-folha)
+
+c) int contar_filhos_diretos(NoArvore *no, char *nome): conta quantos usuários foram convidados diretamente por um usuário específico
+
+Entrada:
+
+Primeira linha: N (número de convites, 1 ≤ N ≤ 100)
+
+Próximas N linhas: nome_convidador nome_convidado (o fundador nunca aparece como convidado)
+
+Última linha: nome do usuário para consultar o número de convidados diretos
+
+Saída:
+
+Primeira linha: "Total de usuarios: <n>"
+
+Segunda linha: "Sem convidados: <n>"
+
+Terceira linha: "Convidados diretos de <nome>: <n>"

@@ -1,0 +1,248 @@
+SIMULADO TEÓRICO — Árvores Genéricas, Árvores Binárias, ABB e Heap
+10 questões de nível misto (fácil a difícil), no estilo de prova teórica.
+Cada questão tem a resposta e, quando necessário, a justificativa logo abaixo.
+
+================================================================
+QUESTÃO 1 (fácil)
+================================================================
+Considere a representação de uma árvore genérica por "filho mais velho / irmão
+mais novo" (primeiro_filho / proximo_irmao). Explique por que essa
+representação consegue armazenar uma árvore com qualquer número de filhos por
+nó usando apenas dois ponteiros por nó, e qual é o custo (em tempo) de
+descobrir o grau (número de filhos diretos) de um nó quando essa informação
+não é armazenada explicitamente.
+
+RESPOSTA:
+Cada nó guarda apenas um ponteiro para o seu primeiro filho e um ponteiro para
+o seu próximo irmão. Os demais filhos de um nó não são referenciados
+diretamente pelo pai: eles formam uma lista encadeada entre si através de
+proximo_irmao, começando em primeiro_filho. Assim, por mais filhos que um nó
+tenha, o pai só precisa conhecer o primeiro deles, e o restante é alcançado
+percorrendo a lista de irmãos. Isso representa a árvore genérica (grau
+variável) com uma estrutura fixa de 2 ponteiros por nó, equivalente a uma
+árvore binária.
+Como o grau não é armazenado, descobrir o grau de um nó exige percorrer toda
+a lista de irmãos a partir de primeiro_filho, contando os elementos. Esse
+percurso custa O(k), onde k é o número de filhos diretos do nó (não depende
+do tamanho total da árvore).
+
+================================================================
+QUESTÃO 2 (fácil)
+================================================================
+Dado o array em formato heap (índice 0 = raiz; filho esquerdo em 2i+1; filho
+direito em 2i+2) [10, 20, 30, -1, -1, 40, -1], desenhe a árvore binária
+correspondente (descreva pai/filhos) e indique se ela é uma ABB válida.
+
+RESPOSTA:
+Índices: 0=10, 1=20, 2=30, 3=-1, 4=-1, 5=40, 6=-1.
+- Nó 10 (índice 0) é a raiz, com filho esquerdo em 1 (valor 20) e filho
+  direito em 2 (valor 30).
+- Nó 20 (índice 1) tem filho esquerdo em 3 (-1, ausente) e filho direito em 4
+  (-1, ausente): é uma folha.
+- Nó 30 (índice 2) tem filho esquerdo em 5 (valor 40) e filho direito em 6
+  (-1, ausente).
+- Nó 40 (índice 5) é folha.
+Não é uma ABB válida: o nó 40 está na subárvore esquerda do nó 30, mas 40 é
+maior que 30. Para ser ABB válida, todo valor na subárvore esquerda de um nó
+deveria ser menor que o valor do próprio nó.
+
+================================================================
+QUESTÃO 3 (fácil)
+================================================================
+Qual é a diferença essencial entre a propriedade de ordenação de uma Árvore
+Binária de Busca (ABB) e a propriedade de ordenação de um heap (de mínimo ou
+de máximo)? Por que, em geral, não é possível listar os elementos de um heap
+em ordem crescente apenas lendo o array na ordem em que ele está armazenado?
+
+RESPOSTA:
+Na ABB, a propriedade é relativa a toda a subárvore: para cada nó, TODOS os
+valores da subárvore esquerda são menores que o valor do nó, e TODOS os
+valores da subárvore direita são maiores. Isso impõe uma ordem total que
+pode ser recuperada por um percurso em-ordem.
+No heap, a propriedade é local e parcial: cada nó só precisa ser menor (heap
+de mínimo) ou maior (heap de máximo) do que seus filhos diretos; não há
+nenhuma relação de ordem garantida entre os dois filhos de um mesmo nó, nem
+entre nós de subárvores diferentes. Por isso, o array de um heap não está
+globalmente ordenado — ele só garante que a raiz é o mínimo (ou máximo)
+global — e não é possível obter a ordem crescente apenas lendo a sequência
+do array.
+
+================================================================
+QUESTÃO 4 (médio)
+================================================================
+Explique o algoritmo de remoção em uma ABB para o caso em que o nó a ser
+removido possui dois filhos. Por que simplesmente apagar o nó e "promover"
+um dos dois filhos para o lugar dele, sem mais cuidados, pode violar a
+propriedade de ABB?
+
+RESPOSTA:
+Quando o nó a remover tem dois filhos, não há como substituí-lo diretamente
+por um dos filhos sem potencialmente violar a propriedade de ABB, pois o
+filho promovido teria sua própria subárvore, que pode conter valores
+incompatíveis com a posição do outro filho (por exemplo, promover o filho
+esquerdo faria o filho direito original "desaparecer" da árvore, a menos que
+seja reencaixado em algum lugar — e não há garantia de onde ele se encaixaria
+corretamente).
+A solução padrão é substituir o valor do nó pelo seu sucessor (o menor valor
+da subárvore direita) ou pelo seu predecessor (o maior valor da subárvore
+esquerda), e então remover recursivamente esse sucessor/predecessor de onde
+ele estava. Como o sucessor é o menor valor maior que todos da subárvore
+esquerda e menor ou igual a todos os demais da subárvore direita, colocá-lo
+na posição do nó removido preserva a propriedade de ABB em toda a árvore. O
+sucessor, por definição, tem no máximo um filho (o direito), então sua
+remoção recai em um dos casos simples (0 ou 1 filho).
+
+================================================================
+QUESTÃO 5 (médio)
+================================================================
+Um heap de mínimo com N elementos é construído a partir de um array
+desordenado usando o algoritmo de build-heap (heapify de baixo para cima),
+que chama a operação de "descer" (sift-down) a partir de cada nó interno,
+começando pelo último nó interno até a raiz.
+a) Por que o build-heap percorre os nós de baixo para cima, e não de cima
+para baixo (chamando "subir" a partir de cada posição, por exemplo)?
+b) Qual é a complexidade do build-heap, e por que ela é O(N) e não O(N log N),
+mesmo fazendo N/2 chamadas de uma operação que, isoladamente, custa O(log N)?
+
+RESPOSTA:
+a) O build-heap de baixo para cima garante que, ao processar um nó, todas as
+subárvores abaixo dele já satisfazem a propriedade de heap (pois os nós mais
+profundos foram processados primeiro). Isso permite que o "descer" aplicado
+a um nó sempre encontre subárvores já válidas, consertando apenas o nó atual
+em relação a elas. Se fosse feito de cima para baixo, ao processar a raiz
+ainda não haveria garantia de que as subárvores abaixo já são heaps válidos,
+então a operação de "descer" não funcionaria corretamente de forma isolada.
+b) Embora cada "descer" custe O(log N) no pior caso, a maioria dos nós está
+em níveis profundos, onde a altura restante da subárvore (e portanto o
+número máximo de trocas que o "descer" pode fazer) é pequena. Somando o
+custo de todos os nós ponderado pela altura de cada um, a série resultante
+converge para O(N) em vez de O(N log N) — é um resultado clássico de análise
+amortizada sobre a estrutura do heap.
+
+================================================================
+QUESTÃO 6 (médio)
+================================================================
+Considere uma árvore genérica representada por um vetor de pais (pai[i]).
+Descreva um procedimento para calcular o Ancestral Comum mais Próximo (LCA)
+de dois nós u e v sem usar nenhuma estrutura auxiliar de pré-processamento
+sofisticada (como binary lifting), e explique qual é a complexidade desse
+procedimento em função da altura da árvore.
+
+RESPOSTA:
+Primeiro, calcula-se a profundidade de u e de v subindo pelos ponteiros de
+pai até a raiz (ou usando profundidades já calculadas). Em seguida, o nó mais
+profundo entre os dois "sobe" (segue pai[]) até que ambos estejam na mesma
+profundidade. A partir daí, os dois nós sobem simultaneamente, um passo por
+vez, até que se tornem o mesmo nó — esse nó é o LCA.
+A complexidade é O(h), onde h é a altura da árvore (no pior caso, a soma dos
+passos necessários para igualar as profundidades mais os passos para
+convergir é proporcional à altura). Em uma árvore degenerada (uma lista
+encadeada), isso pode chegar a O(N); em uma árvore balanceada, seria O(log N).
+
+================================================================
+QUESTÃO 7 (médio)
+================================================================
+Explique o que é o "diâmetro" de uma árvore genérica (ou binária) e descreva
+a ideia do algoritmo que o calcula em uma única passagem recursiva pela
+árvore (sem recalcular alturas repetidamente). Por que não basta calcular
+apenas a altura da árvore a partir da raiz para obter o diâmetro?
+
+RESPOSTA:
+O diâmetro é o maior número de arestas (ou de nós, dependendo da convenção)
+em qualquer caminho entre dois nós da árvore — esse caminho não precisa
+passar pela raiz. A ideia do algoritmo eficiente é, para cada nó, calcular a
+altura de cada uma de suas subárvores filhas e manter as duas maiores alturas
+entre os filhos (top1 e top2); a soma top1 + top2 (mais 2 arestas, uma até
+cada filho) é um candidato ao diâmetro, pois representa o caminho mais longo
+que passa por aquele nó como "ponto mais alto". O algoritmo percorre a árvore
+uma única vez, atualizando um máximo global com esse candidato em cada nó, e
+retornando a altura de cada subárvore para uso pelo nó pai — assim, cada nó é
+visitado uma única vez, custando O(N) no total.
+Calcular apenas a altura a partir da raiz não é suficiente porque o caminho
+mais longo da árvore pode estar inteiramente dentro de uma subárvore, sem
+passar pela raiz — por exemplo, dois ramos profundos de um mesmo nó interno
+que não é a raiz.
+
+================================================================
+QUESTÃO 8 (difícil)
+================================================================
+Um heap de mínimo é implementado como um array. Explique por que a operação
+de remover um elemento arbitrário no meio do heap (não necessariamente a
+raiz), dado apenas seu índice, não pode ser feita apenas removendo-o e
+"fechando o buraco" deslocando os elementos seguintes uma posição para a
+esquerda (como se faria em um array comum). Descreva o procedimento correto
+e sua complexidade.
+
+RESPOSTA:
+Deslocar todos os elementos posteriores uma posição para a esquerda destruiria
+a relação de índice entre pai e filhos (pai de i em (i-1)/2, filhos em 2i+1 e
+2i+2) para todos os elementos deslocados, pois cada um passaria a ocupar um
+índice diferente do que a fórmula espera — a propriedade de heap, que depende
+estritamente dessas relações de índice, deixaria de valer para quase toda a
+estrutura.
+O procedimento correto é: copiar o valor do último elemento do array para a
+posição do elemento a ser removido, diminuir o tamanho do heap em 1, e então
+restaurar a propriedade de heap a partir dessa posição — comparando o novo
+valor com seu pai (se for menor que o pai, aplicar "subir"/sift-up) ou com
+seus filhos (se for maior que algum filho, aplicar "descer"/sift-down; apenas
+uma das duas operações será necessária, nunca ambas). Isso afeta apenas o
+caminho entre a posição afetada e sua posição final, custando O(log N).
+
+================================================================
+QUESTÃO 9 (difícil)
+================================================================
+Compare, em termos de complexidade de tempo no PIOR CASO, as operações de
+inserção, busca e remoção em uma ABB comum (sem balanceamento) com as mesmas
+operações em um heap binário (para os papéis equivalentes: inserir, consultar
+o mínimo/máximo, remover o mínimo/máximo). Explique por que a ABB pode
+degenerar para O(N) nessas operações, enquanto o heap garante O(log N) (ou
+O(1), para consulta) mesmo no pior caso.
+
+RESPOSTA:
+Na ABB sem balanceamento, inserção, busca e remoção custam O(h), onde h é a
+altura da árvore. No pior caso — quando os elementos são inseridos em ordem
+crescente ou decrescente, por exemplo — a árvore degenera em uma lista
+encadeada, com h = N, tornando essas operações O(N).
+No heap binário, a estrutura é sempre mantida "completa" (todos os níveis
+cheios, exceto possivelmente o último, que é preenchido da esquerda para a
+direita), o que garante altura O(log N) independentemente da ordem de
+inserção dos elementos — essa é uma invariante estrutural do heap, e não uma
+consequência da ordem dos dados, como ocorre na ABB. Por isso, inserir e
+remover no heap (que envolvem subir/descer ao longo de um único caminho da
+árvore) são sempre O(log N) no pior caso, e consultar o mínimo/máximo (que
+está sempre na raiz) é O(1).
+A diferença fundamental é que a propriedade de heap é mais fraca (ordem
+parcial, apenas entre pai e filhos) do que a propriedade de ABB (ordem total
+entre subárvores), e essa fraqueza é o que permite ao heap manter sua forma
+completa e balanceada sem nenhum trabalho extra de balanceamento, algo que a
+ABB não garante por construção.
+
+================================================================
+QUESTÃO 10 (difícil)
+================================================================
+Considere que você precisa escolher uma estrutura de dados para implementar
+uma fila de prioridade que será usada em um algoritmo de simulação com
+milhões de operações de inserção e remoção do elemento de maior prioridade.
+Você tem duas opções: (1) uma ABB balanceada por reconstrução periódica
+(como no exercício da árvore balanceada por reconstrução) ou (2) um heap
+binário. Justifique qual estrutura é mais adequada para esse cenário,
+considerando o custo amortizado das operações, e explique em que cenário a
+ABB ainda seria preferível a um heap.
+
+RESPOSTA:
+Para uma fila de prioridade pura (inserir e extrair o de maior prioridade,
+sem necessidade de buscar ou listar elementos em outras posições), o heap
+binário é mais adequado: inserção e remoção do topo custam O(log N) no pior
+caso, sem exigir nenhuma manutenção extra como reconstruções periódicas. A
+ABB balanceada por reconstrução pode degradar para O(N) entre reconstruções
+(se muitas inserções desbalancearem a árvore) e o custo de cada
+reconstrução é O(N), o que precisa ser amortizado sobre um número suficiente
+de operações para não comprometer o desempenho — e esse controle é um custo
+de engenharia adicional que o heap não exige.
+A ABB continuaria sendo preferível em cenários em que, além de inserir e
+remover o extremo, é necessário suportar operações que o heap não faz bem,
+como buscar um elemento específico por valor em tempo O(log N) (no heap isso
+é O(N), pois não há ordem total), listar todos os elementos em ordem, ou
+responder consultas de intervalo (como "quantos elementos estão entre a e
+b"), que a ABB resolve naturalmente por sua propriedade de ordenação total e
+que o heap não é capaz de responder eficientemente.

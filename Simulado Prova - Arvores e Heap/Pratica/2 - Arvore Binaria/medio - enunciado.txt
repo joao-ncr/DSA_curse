@@ -1,0 +1,19 @@
+Uma árvore binária é representada por um array no formato heap (índice 0 = raiz; filho esquerdo em 2i+1, filho direito em 2i+2; -1 indica nó vazio).
+
+Uma árvore é balanceada quando, para cada nó, a diferença entre as alturas das subárvores esquerda e direita é no máximo 1, e ambas as subárvores também são balanceadas.
+
+Considere a altura de uma árvore vazia como -1 e a altura de uma árvore com um único nó como 0.
+
+Implemente um programa que determine se a árvore é balanceada e, em caso afirmativo, informe também a sua altura.
+
+Entrada:
+
+Primeira linha: N (tamanho do array, 1 ≤ N ≤ 1000)
+
+Segunda linha: N inteiros representando os valores dos nós (-1 indica nó vazio)
+
+Saída:
+
+Se a árvore for balanceada: "BALANCEADA" na primeira linha e "Altura: <n>" na segunda linha
+
+Se não for balanceada: "NAO BALANCEADA"

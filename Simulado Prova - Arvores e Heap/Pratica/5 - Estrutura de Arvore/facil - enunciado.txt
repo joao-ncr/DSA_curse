@@ -1,0 +1,19 @@
+Uma árvore com N nós (numerados de 0 a N-1) é representada por um vetor de pais pai[], onde pai[i] indica o pai do nó i (pai[raiz] = -1).
+
+Implemente um programa que calcule:
+
+a) o grau de cada nó (número de filhos diretos)
+
+b) a lista de nós-folha (nós sem filhos), em ordem crescente de número
+
+Entrada:
+
+Primeira linha: N (número de nós, 1 ≤ N ≤ 1000)
+
+Segunda linha: N inteiros representando pai[0], pai[1], ..., pai[N-1]
+
+Saída:
+
+Primeira linha: "Graus: g0 g1 ... g(N-1)" (os graus separados por espaço, na ordem dos nós)
+
+Segunda linha: "Folhas: <nós-folha separados por espaço>"

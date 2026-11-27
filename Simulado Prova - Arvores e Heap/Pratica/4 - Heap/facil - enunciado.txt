@@ -1,0 +1,23 @@
+Implemente uma fila de prioridade usando um heap de mínimo representado por um array (vetor). Processe os seguintes comandos:
+
+INSERIR v: insere o valor v no heap, mantendo a propriedade de heap de mínimo (o valor "sobe" trocando de posição com o pai enquanto for menor que ele)
+
+REMOVER_MIN: remove e imprime o menor valor do heap (o último elemento do array toma o lugar da raiz e "desce" trocando com o menor filho até restaurar a propriedade de heap); imprime "VAZIO" se o heap estiver vazio
+
+TOPO: imprime o menor valor do heap sem removê-lo (ou "VAZIO" se o heap estiver vazio)
+
+IMPRIMIR: imprime os valores do heap na ordem em que estão armazenados no array (ou "VAZIO" se o heap estiver vazio)
+
+FIM: encerrar
+
+Entrada:
+
+Múltiplas linhas com comandos
+
+A entrada termina com FIM
+
+Saída:
+
+Para REMOVER_MIN e TOPO: o valor removido/consultado, ou "VAZIO"
+
+Para IMPRIMIR: os valores separados por espaço, na ordem do array, ou "VAZIO"

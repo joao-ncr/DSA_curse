@@ -1,0 +1,27 @@
+Implemente um heap de mínimo que é construído de uma só vez a partir de N valores dados na entrada, usando o algoritmo de heapify (build-heap) de baixo para cima, e que em seguida processa comandos de atualização.
+
+Comandos:
+
+ATUALIZAR pos novo_valor: atualiza o valor armazenado na posição pos (0-indexado, de acordo com a posição no array do heap) para novo_valor e restaura a propriedade de heap (pode ser necessário mover o valor para cima ou para baixo); imprime a nova posição (0-indexada) do valor atualizado após a reorganização; se pos estiver fora dos limites do heap, imprime "POSICAO INVALIDA"
+
+TOPO: imprime o menor valor do heap
+
+IMPRIMIR: imprime os valores do heap na ordem do array, separados por espaço
+
+FIM: encerrar
+
+Entrada:
+
+Primeira linha: N (quantidade inicial de valores, 1 ≤ N ≤ 1000)
+
+Segunda linha: N inteiros
+
+Próximas linhas: comandos (conforme acima), terminando com FIM
+
+Saída:
+
+Para ATUALIZAR: a nova posição do valor, ou "POSICAO INVALIDA"
+
+Para TOPO: o menor valor do heap
+
+Para IMPRIMIR: os valores separados por espaço

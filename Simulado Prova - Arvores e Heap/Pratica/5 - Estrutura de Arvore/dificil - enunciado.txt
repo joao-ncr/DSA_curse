@@ -1,0 +1,21 @@
+Implemente um programa que:
+
+a) constrói, a partir de um vetor de pais, uma árvore genérica dinâmica usando a representação filho mais velho / irmão mais novo
+
+b) calcula o diâmetro da árvore: o maior número de arestas em qualquer caminho entre dois nós quaisquer (não necessariamente passando pela raiz)
+
+typedef struct NoArvore {
+    int id;
+    struct NoArvore *primeiro_filho;
+    struct NoArvore *proximo_irmao;
+} NoArvore;
+
+Entrada:
+
+Primeira linha: N (número de nós, 1 ≤ N ≤ 1000)
+
+Segunda linha: N inteiros representando pai[0], pai[1], ..., pai[N-1] (pai[raiz] = -1)
+
+Saída:
+
+Primeira linha: "Diametro: <n>"

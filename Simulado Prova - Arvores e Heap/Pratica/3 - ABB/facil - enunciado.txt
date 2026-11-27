@@ -1,0 +1,25 @@
+Uma biblioteca organiza os códigos de seus livros disponíveis em uma Árvore Binária de Busca (ABB). Implemente um sistema que processa as seguintes operações:
+
+INSERIR c: insere o código c na ABB (ignorar se já existir)
+
+BUSCAR c: imprime "ENCONTRADO" se o código existir na ABB, ou "NAO ENCONTRADO" caso contrário
+
+MENOR: imprime o menor código disponível na ABB (ou "VAZIA")
+
+MAIOR: imprime o maior código disponível na ABB (ou "VAZIA")
+
+LISTAR: imprime todos os códigos em ordem crescente, separados por espaço (ou "VAZIA")
+
+FIM: encerrar
+
+Entrada:
+
+Múltiplas linhas com comandos
+
+A entrada termina com FIM
+
+Saída:
+
+Para BUSCAR, MENOR e MAIOR: o resultado da operação
+
+Para LISTAR: os códigos em ordem crescente, ou "VAZIA" se não houver nenhum

@@ -1,0 +1,21 @@
+Um sistema bancário mantém números de conta (inteiros, únicos) em uma Árvore Binária de Busca (ABB), que pode ficar desbalanceada ao longo de muitas inserções. Implemente um sistema que processa as seguintes operações:
+
+INSERIR c: insere o número de conta c na ABB
+
+INTERVALO a b: imprime a quantidade de contas com valor entre a e b, inclusive
+
+BALANCEAR: reconstrói a ABB para que fique perfeitamente balanceada (mantendo a propriedade de ABB) e imprime o percurso em pré-ordem da nova árvore (ou "VAZIA" se não houver contas)
+
+FIM: encerrar
+
+Entrada:
+
+Múltiplas linhas com comandos
+
+A entrada termina com FIM
+
+Saída:
+
+Para INTERVALO: a quantidade de contas no intervalo [a, b]
+
+Para BALANCEAR: o percurso em pré-ordem da árvore balanceada, separado por espaço, ou "VAZIA"

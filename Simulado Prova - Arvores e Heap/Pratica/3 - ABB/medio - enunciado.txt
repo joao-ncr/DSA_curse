@@ -1,0 +1,27 @@
+Um sistema acadêmico mantém as notas (inteiras, únicas) dos alunos de uma turma em uma Árvore Binária de Busca (ABB). Implemente um sistema que processa as seguintes operações:
+
+INSERIR n: insere a nota n na ABB
+
+REMOVER n: remove a nota n da ABB (se existir)
+
+MENORES x: imprime a quantidade de notas estritamente menores que x
+
+ALTURA: imprime a altura da ABB (árvore vazia = -1, árvore com um único nó = 0)
+
+LISTAR: imprime todas as notas em ordem crescente, separadas por espaço (ou "VAZIA")
+
+FIM: encerrar
+
+Entrada:
+
+Múltiplas linhas com comandos
+
+A entrada termina com FIM
+
+Saída:
+
+Para MENORES: a quantidade de notas menores que x
+
+Para ALTURA: a altura atual da ABB
+
+Para LISTAR: as notas em ordem crescente, ou "VAZIA"

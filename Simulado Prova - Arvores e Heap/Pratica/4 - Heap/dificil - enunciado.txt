@@ -1,0 +1,25 @@
+Um pronto-socorro atende pacientes por ordem de prioridade (quanto menor o valor, mais urgente). Em caso de prioridades iguais, o paciente que chegou primeiro deve ser atendido primeiro.
+
+Implemente uma fila de prioridade usando um heap de mínimo baseado em array, cujo critério de comparação considera a prioridade e, em caso de empate, a ordem de chegada. Processe os seguintes comandos:
+
+CHEGAR nome prioridade: registra a chegada de um paciente (a ordem de chegada deve ser registrada para uso no critério de desempate)
+
+ATENDER: remove e imprime o paciente mais prioritário no formato "nome prioridade"; imprime "VAZIO" se não houver pacientes na fila
+
+TOTAL: imprime a quantidade de pacientes atualmente na fila
+
+FIM: encerrar
+
+Entrada:
+
+Múltiplas linhas com comandos
+
+A entrada termina com FIM
+
+Os nomes são strings sem espaços (até 50 caracteres); 1 ≤ prioridade ≤ 1000
+
+Saída:
+
+Para ATENDER: "nome prioridade" do paciente atendido, ou "VAZIO"
+
+Para TOTAL: a quantidade de pacientes na fila

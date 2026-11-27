@@ -1,0 +1,31 @@
+Um sistema de arquivos organiza diretórios e arquivos em uma árvore genérica. Para evitar o uso de recursão (que poderia causar estouro de pilha em árvores muito profundas), implemente os percursos e cálculos abaixo usando apenas pilhas/filas explícitas.
+
+typedef struct NoArvore {
+    char nome[50];
+    struct NoArvore *primeiro_filho;
+    struct NoArvore *proximo_irmao;
+} NoArvore;
+
+Implemente, sem usar recursão:
+
+a) void preordem_iterativa(NoArvore *raiz): imprime o percurso em pré-ordem usando uma pilha explícita
+
+b) void posordem_iterativa(NoArvore *raiz): imprime o percurso em pós-ordem usando uma pilha explícita (cada nó só é impresso depois de todos os seus filhos terem sido visitados)
+
+c) char *maior_subarvore(NoArvore *raiz): encontra, sem recursão, o nome do nó, dentre todos que NÃO são a raiz, cuja subárvore (incluindo ele mesmo) contém o maior número de nós; em caso de empate, retorna o nome que aparece primeiro em um percurso em largura (BFS) a partir da raiz
+
+Dica para o item (b): mantenha, para cada nó na pilha, um ponteiro para o próximo filho ainda não processado; quando esse ponteiro chegar a NULL, o nó pode ser impresso e desempilhado.
+
+Entrada:
+
+Primeira linha: N (número de nós, 1 ≤ N ≤ 1000)
+
+Próximas N linhas: nome_pai nome_filho (a raiz nunca aparece como filho)
+
+Saída:
+
+Primeira linha: "Pre-ordem: <nós separados por espaço>"
+
+Segunda linha: "Pos-ordem: <nós separados por espaço>"
+
+Terceira linha: "Maior subarvore: <nome>"

@@ -1,0 +1,23 @@
+Uma árvore binária é representada por um array no formato heap, onde para o nó no índice i, o filho esquerdo está no índice 2i+1 e o filho direito está no índice 2i+2 (-1 indica ausência de nó; índice 0 é a raiz).
+
+Implemente um programa que, dado o array, calcule e imprima:
+
+a) o percurso em pré-ordem
+
+b) o percurso em-ordem
+
+c) o percurso em pós-ordem
+
+Entrada:
+
+Primeira linha: N (tamanho do array, 1 ≤ N ≤ 1000)
+
+Segunda linha: N inteiros representando os valores dos nós (-1 indica nó vazio)
+
+Saída:
+
+Primeira linha: "Pre-ordem: <valores separados por espaço>"
+
+Segunda linha: "Em-ordem: <valores separados por espaço>"
+
+Terceira linha: "Pos-ordem: <valores separados por espaço>"
